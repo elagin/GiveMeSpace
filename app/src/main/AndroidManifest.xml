@@ -16,6 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".FileManager"
+            android:label="@string/title_activity_file_manager"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="elagin.pasha.givemespace.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

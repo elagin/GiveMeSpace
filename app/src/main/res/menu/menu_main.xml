@@ -8,10 +8,14 @@
           app:showAsAction="never"/>
 
     <item
+            android:id="@+id/action_give"
+            android:icon="@android:drawable/ic_input_add"
+            yourapp:showAsAction="ifRoom"
+            android:title="@string/update" />
+
+    <item
             android:id="@+id/action_update"
             android:icon="@android:drawable/ic_menu_rotate"
             yourapp:showAsAction="ifRoom"
-            android:title="@string/update">
-    </item>
-
+            android:title="@string/update" />
 </menu>
