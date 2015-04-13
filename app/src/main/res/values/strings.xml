@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">GiveMeSpace</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="free">Свободно %1$s </string>
+    <string name="share">Поделиться</string>
+    <string name="update">Обновить</string>
+</resources>
