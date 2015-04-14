@@ -4,19 +4,26 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FileManager extends ActionBarActivity {
 
-    private String path = "/storage/sdcard0";
+    private final String UPPER_DIR_NAME = "..";
 
-    private ArrayList<String> fileList = new ArrayList<String>();
-    private ArrayAdapter<String> adapter;
+    private String currentPath = "/storage/sdcard0";
+
+    private TextView pathView;
+    private FileListAdapter adapter;
+
+    private List<GSFile> records = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,27 +33,69 @@ public class FileManager extends ActionBarActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        ListView lv = (ListView) findViewById(R.id.listView);
+        pathView = (TextView) findViewById(R.id.path);
+
+        final ListView lv = (ListView) findViewById(R.id.listView);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                GSFile item = (GSFile) adapter.getItem(position);
+
+                if (item.name.equals(UPPER_DIR_NAME)) {
+                    toUpDir();
+                    return;
+                }
+
+                if (!item.isFile) {
+                    toDownDir(item.name);
+                    return;
+                }
+            }
+        });
+
         update();
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, fileList);
+        adapter = new FileListAdapter(this, records);
+
         lv.setAdapter(adapter);
     }
 
+    private void toDownDir(String path) {
+        //prevPath = currentPath;
+        currentPath = currentPath + File.separator + path;
+        update();
+    }
+
+    private void toUpDir() {
+        int cutPos = currentPath.lastIndexOf(File.separator);
+        currentPath = currentPath.substring(0, cutPos);
+        update();
+    }
+
     private void update() {
-        if (fileList.size() > 0) {
-            fileList.clear();
+        if (records.size() > 0) {
+            records.clear();
         }
-        File dir = new File(path);
+
+        pathView.setText(currentPath);
+
+        GSFile upperDir = new GSFile();
+        upperDir.name = UPPER_DIR_NAME;
+        records.add(upperDir);
+
+        File dir = new File(currentPath);
         File file[] = dir.listFiles();
         for (int i=0; i < file.length; i++) {
-            String name = file[i].getName();
-            String size = "dir";
-
+            GSFile item = new GSFile();
+            item.name = file[i].getName();
             if(file[i].isFile()) {
-                size = Long.toString(file[i].length());
+                item.size = Long.toString(file[i].length());
+                item.isFile = true;
             }
-            fileList.add(name + " : " + size);
+            records.add(item);
         }
+        if(adapter != null)
+            adapter.notifyDataSetChanged();
     }
 
     @Override
