@@ -2,10 +2,12 @@ package elagin.pasha.givemespace;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -40,15 +42,20 @@ public class FileListAdapter extends ArrayAdapter<GSFile> {
         // populate row widgets from record data
         GSFile record = records.get(position);
 
-        // get widgets from the view
-        //TextView columnDate = (TextView) view.findViewById(R.id.columnDate);
-        //columnDate.setText(Const.timeFormat.format(record.time.getTime()));
+        ImageView image = (ImageView) view.findViewById(R.id.image);
+        if(record.isFile) {
+            image.setImageResource(R.drawable.ic_menu_paste_holo_light);
+        } else if (record.name.equals("..")) {
+            image.setImageResource(R.drawable.ic_menu_back);
+        } else {
+            image.setImageResource(R.drawable.ic_menu_archive);
+        }
 
         TextView name = (TextView) view.findViewById(R.id.name);
         name.setText(/*Const.timeFormat.format(record.time.getTime()) + " - " + */record.name);
 
         TextView size = (TextView) view.findViewById(R.id.size);
-        size.setText(record.size);
+        size.setText(Long.toString(record.size));
         return view;
     }
 

@@ -5,6 +5,6 @@ package elagin.pasha.givemespace;
  */
 public class GSFile {
     String name = "";
-    String size = "";
+    long size = 0;
     Boolean isFile = false;
 }

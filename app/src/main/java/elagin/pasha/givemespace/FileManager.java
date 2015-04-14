@@ -1,13 +1,16 @@
 package elagin.pasha.givemespace;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,7 +57,7 @@ public class FileManager extends ActionBarActivity {
             }
         });
 
-        update();
+        update(false);
         adapter = new FileListAdapter(this, records);
 
         lv.setAdapter(adapter);
@@ -63,16 +66,16 @@ public class FileManager extends ActionBarActivity {
     private void toDownDir(String path) {
         //prevPath = currentPath;
         currentPath = currentPath + File.separator + path;
-        update();
+        update(false);
     }
 
     private void toUpDir() {
         int cutPos = currentPath.lastIndexOf(File.separator);
         currentPath = currentPath.substring(0, cutPos);
-        update();
+        update(false);
     }
 
-    private void update() {
+    private void update(boolean isCalcDir) {
         if (records.size() > 0) {
             records.clear();
         }
@@ -83,22 +86,29 @@ public class FileManager extends ActionBarActivity {
         upperDir.name = UPPER_DIR_NAME;
         records.add(upperDir);
 
-        File dir = new File(currentPath);
-        File file[] = dir.listFiles();
-        for (int i=0; i < file.length; i++) {
-            GSFile item = new GSFile();
-            item.name = file[i].getName();
-            if(file[i].isFile()) {
-                item.size = Long.toString(file[i].length());
-                item.isFile = true;
+        try {
+            File dir = new File(currentPath);
+            File file[] = dir.listFiles();
+            for (int i=0; i < file.length; i++) {
+                GSFile item = new GSFile();
+                item.name = file[i].getName();
+                if(file[i].isFile()) {
+                    item.size = file[i].length();
+                    item.isFile = true;
+                } else {
+                    if(isCalcDir) {
+                        item.size = getFolderSize(currentPath + File.separator + file[i].getName());
+                    }
+                }
+                records.add(item);
             }
-            records.add(item);
-        }
-        if(adapter != null)
-            adapter.notifyDataSetChanged();
+            if(adapter != null)
+                adapter.notifyDataSetChanged();
 
-        long ress = getFolderSize("/storage/sdcard0/DCIM");
-        int a = 0;
+        }
+        catch (Exception e) {
+            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -110,36 +120,43 @@ public class FileManager extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_update:
+                update(true);
+                adapter.notifyDataSetChanged();
+                Toast.makeText(this, "Обновлено.", Toast.LENGTH_LONG).show();
+                return true;
         }
-
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     private long getFolderSize(String path) {
 
         long result = 0;
-        File dir = new File(path);
-        File files[] = dir.listFiles();
+        String fileName = "";
+        try {
 
-        for (int i=0; i < files.length; i++) {
-            File file = files[i];
+            File dir = new File(path);
+            File files[] = dir.listFiles();
 
-            if(file.isFile()) {
-                result += file.length();
-            } else if (file.isDirectory()){
-                result += getFolderSize(path + File.separator + file.getName());
-            } else {
-                int a = 0;
+            for (int i = 0; i < files.length; i++) {
+                File file = files[i];
+
+                fileName = file.getName();
+
+                if (file.isFile()) {
+                    result += file.length();
+                } else if (file.isDirectory()) {
+                    result += getFolderSize(path + File.separator + file.getName());
+                } else {
+                    int a = 0;
+                }
+
             }
-
+        }
+        catch (Exception e) {
+            Toast.makeText(this, "Ошибка: " + fileName + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.d("FM", e.getLocalizedMessage());
         }
         return result;
     }
