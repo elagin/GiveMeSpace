@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -45,7 +46,7 @@ public class FileListAdapter extends ArrayAdapter<GSFile> {
         ImageView image = (ImageView) view.findViewById(R.id.image);
         if(record.isFile) {
             image.setImageResource(R.drawable.ic_menu_paste_holo_light);
-        } else if (record.name.equals("..")) {
+        } else if (record.name.equals(FileManager.UPPER_DIR_NAME)) {
             image.setImageResource(R.drawable.ic_menu_back);
         } else {
             image.setImageResource(R.drawable.ic_menu_archive);
@@ -55,8 +56,15 @@ public class FileListAdapter extends ArrayAdapter<GSFile> {
         name.setText(/*Const.timeFormat.format(record.time.getTime()) + " - " + */record.name);
 
         TextView size = (TextView) view.findViewById(R.id.size);
-        size.setText(Long.toString(record.size));
+        size.setText(readableFileSize(record.size));
         return view;
+    }
+
+    public static String readableFileSize(long size) {
+        if(size <= 0) return "0";
+        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
     @Override

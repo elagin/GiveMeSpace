@@ -19,7 +19,7 @@ import java.util.List;
 
 public class FileManager extends ActionBarActivity {
 
-    private final String UPPER_DIR_NAME = "..";
+    public static final String UPPER_DIR_NAME = "..";
 
     private String currentPath = "/storage/sdcard0";
 
@@ -33,6 +33,9 @@ public class FileManager extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_manager);
 
+        Bundle b = getIntent().getExtras();
+        currentPath = b.getString("startPath");
+
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -43,7 +46,7 @@ public class FileManager extends ActionBarActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                GSFile item = (GSFile) adapter.getItem(position);
+                GSFile item = adapter.getItem(position);
 
                 if (item.name.equals(UPPER_DIR_NAME)) {
                     toUpDir();
@@ -64,7 +67,6 @@ public class FileManager extends ActionBarActivity {
     }
 
     private void toDownDir(String path) {
-        //prevPath = currentPath;
         currentPath = currentPath + File.separator + path;
         update(false);
     }
@@ -151,7 +153,6 @@ public class FileManager extends ActionBarActivity {
                 } else {
                     int a = 0;
                 }
-
             }
         }
         catch (Exception e) {

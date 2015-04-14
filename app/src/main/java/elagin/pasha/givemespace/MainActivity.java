@@ -87,8 +87,11 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(this, "Обновлено.", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_give:
-                Intent i = new Intent(this, FileManager.class);
-                this.startActivity(i);
+                Intent intent = new Intent(this, FileManager.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("startPath", "/storage/sdcard0");
+                intent.putExtras(bundle);
+                this.startActivity(intent);
                 return true;
         }
         return false;
