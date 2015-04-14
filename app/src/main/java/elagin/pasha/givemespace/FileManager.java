@@ -96,6 +96,9 @@ public class FileManager extends ActionBarActivity {
         }
         if(adapter != null)
             adapter.notifyDataSetChanged();
+
+        long ress = getFolderSize("/storage/sdcard0/DCIM");
+        int a = 0;
     }
 
     @Override
@@ -118,5 +121,26 @@ public class FileManager extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private long getFolderSize(String path) {
+
+        long result = 0;
+        File dir = new File(path);
+        File files[] = dir.listFiles();
+
+        for (int i=0; i < files.length; i++) {
+            File file = files[i];
+
+            if(file.isFile()) {
+                result += file.length();
+            } else if (file.isDirectory()){
+                result += getFolderSize(path + File.separator + file.getName());
+            } else {
+                int a = 0;
+            }
+
+        }
+        return result;
     }
 }
