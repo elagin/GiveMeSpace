@@ -14,7 +14,7 @@
             android:title="@string/update" />
 
     <item
-            android:id="@+id/action_update"
+            android:id="@+id/main_action_update"
             android:icon="@android:drawable/ic_menu_rotate"
             yourapp:showAsAction="ifRoom"
             android:title="@string/update" />

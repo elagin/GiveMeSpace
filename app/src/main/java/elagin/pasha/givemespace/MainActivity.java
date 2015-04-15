@@ -81,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_update:
+            case R.id.main_action_update:
                 update();
                 adapter.notifyDataSetChanged();
                 Toast.makeText(this, "Обновлено.", Toast.LENGTH_LONG).show();

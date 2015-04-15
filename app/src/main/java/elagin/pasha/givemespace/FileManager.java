@@ -22,6 +22,7 @@ public class FileManager extends ActionBarActivity {
     private static final String TAG = FileManager.class.getSimpleName();
 
     public static final String UPPER_DIR_NAME = "..";
+    public static final String ROOT_DIR_NAME = "/";
 
     private String currentPath = "/storage/sdcard0";
 
@@ -33,6 +34,7 @@ public class FileManager extends ActionBarActivity {
     private long folderVolume;
 
     private android.support.v7.app.ActionBar actionBar;
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,10 @@ public class FileManager extends ActionBarActivity {
     }
 
     private void toDownDir(String path) {
-        currentPath = currentPath + File.separator + path;
+        if(currentPath.equals(ROOT_DIR_NAME))
+            currentPath = File.separator + path;
+        else
+            currentPath = currentPath + File.separator + path;
         update(false);
     }
 
@@ -81,7 +86,7 @@ public class FileManager extends ActionBarActivity {
         int cutPos = currentPath.lastIndexOf(File.separator);
         currentPath = currentPath.substring(0, cutPos);
         if(currentPath.length() == 0)
-            currentPath = "/";
+            currentPath = ROOT_DIR_NAME;
         update(false);
     }
 
@@ -90,6 +95,10 @@ public class FileManager extends ActionBarActivity {
             records.clear();
         }
 
+        if(mMenu != null) {
+            MenuItem menuItem = mMenu.findItem(R.id.action_update);
+            menuItem.setVisible(!currentPath.equals(ROOT_DIR_NAME));
+        }
         folderVolume = 0;
         setTitle();
         pathView.setText(currentPath);
@@ -133,6 +142,7 @@ public class FileManager extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_file_manager, menu);
+        mMenu = menu;
         return true;
     }
 
