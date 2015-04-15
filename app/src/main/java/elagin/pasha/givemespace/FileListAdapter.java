@@ -1,8 +1,6 @@
 package elagin.pasha.givemespace;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -56,15 +53,8 @@ public class FileListAdapter extends ArrayAdapter<GSFile> {
         name.setText(/*Const.timeFormat.format(record.time.getTime()) + " - " + */record.name);
 
         TextView size = (TextView) view.findViewById(R.id.size);
-        size.setText(readableFileSize(record.size));
+        size.setText(GSConverter.readableFileSize(record.size));
         return view;
-    }
-
-    public static String readableFileSize(long size) {
-        if(size <= 0) return "0";
-        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
-        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
     @Override

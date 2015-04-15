@@ -6,5 +6,6 @@
     <string name="free">Свободно %1$s </string>
     <string name="share">Поделиться</string>
     <string name="update">Обновить</string>
-    <string name="title_activity_file_manager">FileManager</string>
+    <string name="title_activity_file_manager">Объем: %1$s</string>
+    <string name="succsess">Готово.</string>
 </resources>
