@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -136,7 +138,66 @@ public class FileManager extends ActionBarActivity {
         catch (Exception e) {
             Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
+        //Collections.sort(records, TypeeAscComparator);
+        Collections.sort(records, SizeDescComparator);
     }
+
+    public static Comparator<GSFile> SizeAscComparator = new Comparator<GSFile>() {
+
+        public int compare(GSFile app1, GSFile app2) {
+
+            GSFile file1 = app1;
+            GSFile file2 = app2;
+
+            if(file1.size > file2.size)
+                return 1;
+            else
+                return -1;
+        }
+    };
+
+    public static Comparator<GSFile> SizeDescComparator = new Comparator<GSFile>() {
+
+        public int compare(GSFile app1, GSFile app2) {
+
+            GSFile file1 = app1;
+            GSFile file2 = app2;
+
+            if(file1.size < file2.size)
+                return 1;
+            else
+                return -1;
+        }
+    };
+
+    public static Comparator<GSFile> TypeeAscComparator = new Comparator<GSFile>() {
+
+        public int compare(GSFile app1, GSFile app2) {
+
+            GSFile file1 = app1;
+            GSFile file2 = app2;
+
+            if(file1.isFile)
+                return 1;
+            else
+                return -1;
+        }
+    };
+
+    public static Comparator<GSFile> TypeDescComparator = new Comparator<GSFile>() {
+
+        public int compare(GSFile app1, GSFile app2) {
+
+            GSFile file1 = app1;
+            GSFile file2 = app2;
+
+            if(file2.isFile)
+                return 1;
+            else
+                return -1;
+        }
+    };
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
