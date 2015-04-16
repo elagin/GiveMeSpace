@@ -1,31 +1,27 @@
 package elagin.pasha.givemespace;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StatFs;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 
 public class MainActivity extends ActionBarActivity {
 
-    MessageFormat formatGb = new MessageFormat("{0, number,#.##} GB", Locale.US);
-    MessageFormat formatMb = new MessageFormat("{0, number,##.#} MB", Locale.US);
-
-    private ArrayList<String> devices = new ArrayList<String>();
-
+    private List<GSDevice> devices = new ArrayList();
     private String[] paths = new String[]{"/data/sdext2", "/storage/sdcard0", "/storage/sdcard1"};
-
-    private ArrayAdapter<String> adapter;
+    private DeviceListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,38 +32,30 @@ public class MainActivity extends ActionBarActivity {
 
         ListView lv = (ListView) findViewById(R.id.listView);
         update();
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, devices);
+
+        adapter = new DeviceListAdapter(this, devices);
         lv.setAdapter(adapter);
-    }
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-    private String getSize(String pStr) {
-        String res;
-        if (pStr.length() > 0) {
-            String size = formatGb.format(new Object[]{0});
-            int percent = 0;
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                GSDevice item = adapter.getItem(position);
+                Intent intent = new Intent(MainActivity.this, FileManager.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("startPath", item.name);
+                intent.putExtras(bundle);
+                MainActivity.this.startActivity(intent);
+            }
+        });
 
-            File dir = new File(pStr);
-            if (dir.canRead()) {
-                StatFs fs = new StatFs(dir.getAbsolutePath());
-                if (fs.getAvailableBlocks() > 0) {
-                    size = formatGb.format(new Object[]{(float) (fs.getAvailableBlocks()) * fs.getBlockSize() / (1 << 30)});
-                    percent = (int) (fs.getAvailableBlocks() * 100 / fs.getBlockCount());
-                }
-                String text = getString(R.string.free, size);
-                return text;
-            } else
-                return "i can't read path";
-        } else {
-            return "Invalid path";
-        }
     }
 
     private void update() {
-        if (devices.size() > 0) {
-            devices.clear();
-        }
+        devices.clear();
+
         for (String device : paths) {
-            devices.add(device + "\t\t" + getSize(device));
+            GSDevice item = new GSDevice(device);
+            devices.add(item);
         }
     }
 
@@ -85,13 +73,6 @@ public class MainActivity extends ActionBarActivity {
                 update();
                 adapter.notifyDataSetChanged();
                 Toast.makeText(this, "Обновлено.", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.action_give:
-                Intent intent = new Intent(this, FileManager.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("startPath", "/storage/sdcard0");
-                intent.putExtras(bundle);
-                this.startActivity(intent);
                 return true;
         }
         return false;

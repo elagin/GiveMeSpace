@@ -1,7 +1,7 @@
 package elagin.pasha.givemespace;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +32,8 @@ public class FileManager extends ActionBarActivity {
     private FileListAdapter adapter;
 
     private List<GSFile> records = new ArrayList();
+    private List<GSFile> foldersList = new ArrayList();
+    private List<GSFile> filesList = new ArrayList();
 
     private long folderVolume;
 
@@ -93,9 +95,9 @@ public class FileManager extends ActionBarActivity {
     }
 
     private void update(boolean isCalcDir) {
-        if (records.size() > 0) {
-            records.clear();
-        }
+        records.clear();
+        foldersList.clear();
+        filesList.clear();
 
         if(mMenu != null) {
             MenuItem menuItem = mMenu.findItem(R.id.action_update);
@@ -120,13 +122,14 @@ public class FileManager extends ActionBarActivity {
                         if (files[i].isFile()) {
                             item.size = files[i].length();
                             item.isFile = true;
+                            filesList.add(item);
                         } else {
                             if (isCalcDir) {
                                 item.size = getFolderSize(currentPath + File.separator + files[i].getName());
                             }
+                            foldersList.add(item);
                         }
                         folderVolume += item.size;
-                        records.add(item);
                     }
                 }
                 if (adapter != null)
@@ -134,12 +137,15 @@ public class FileManager extends ActionBarActivity {
             } else {
                 Log.e(TAG + "update", "Invalid new File");
             }
+            Collections.sort(foldersList, SizeDescComparator);
+            Collections.sort(filesList, SizeDescComparator);
+
+            records.addAll(foldersList);
+            records.addAll(filesList);
         }
         catch (Exception e) {
             Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
-        //Collections.sort(records, TypeeAscComparator);
-        Collections.sort(records, SizeDescComparator);
     }
 
     public static Comparator<GSFile> SizeAscComparator = new Comparator<GSFile>() {

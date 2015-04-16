@@ -21,7 +21,6 @@ public class FileListAdapter extends ArrayAdapter<GSFile> {
     /// a list of gasoline records for display
     private final List<GSFile> records;
 
-
     public FileListAdapter(Activity activity, List<GSFile> records) {
         super(activity, R.layout.row_file_list, records);
         this.activity = activity;

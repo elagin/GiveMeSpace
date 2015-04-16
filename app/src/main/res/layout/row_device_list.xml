@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:orientation="vertical">
+
+            <TableRow
+                    android:id="@+id/tableRow1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:gravity="center">
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                    <TextView
+                            android:id="@+id/device_list_name"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.2"
+                            android:gravity="top"
+                            android:text="device_list_name"
+                            android:layout_width="match_parent"/>
+
+                    <TextView
+                            android:id="@+id/device_list_total"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.25"
+                            android:gravity="top"
+                            android:text="device_list_total"
+                            android:layout_width="match_parent"/>
+
+                    <TextView
+                            android:id="@+id/device_list_free"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.25"
+                            android:gravity="top"
+                            android:text="device_list_free"
+                            android:layout_width="match_parent"/>
+
+                </LinearLayout>
+            </TableRow>
+
+            <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/device_list_progressbar"
+                    android:layout_gravity="center_horizontal"
+                    />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
