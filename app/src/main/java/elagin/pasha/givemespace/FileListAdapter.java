@@ -1,11 +1,14 @@
 package elagin.pasha.givemespace;
 
 import android.app.Activity;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.List;
@@ -36,7 +39,6 @@ public class FileListAdapter extends ArrayAdapter<GSFile> {
             view = inflater.inflate(R.layout.row_file_list, null);
         }
 
-        // populate row widgets from record data
         GSFile record = records.get(position);
 
         ImageView image = (ImageView) view.findViewById(R.id.image);

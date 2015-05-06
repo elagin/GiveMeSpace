@@ -9,4 +9,10 @@
     <string name="title_activity_file_manager">Занято: %1$s</string>
     <string name="title_activity_avaible_size">cвободно: %1$s</string>
     <string name="succsess">Готово.</string>
+    <string name="filemanager_context_delete">Удалить</string>
+    <string name="title_confirm_delete_dialog">Удаление файла / папки.</string>
+    <string name="message_confirm_delete_dialog">Вы уверены?</string>
+    <string name="yes_label">Да</string>
+    <string name="no_label">нет</string>
+    <string name="toast_delete_failed">Ошибка удаления: </string>
 </resources>
