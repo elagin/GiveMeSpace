@@ -22,8 +22,12 @@ public class GSDevice {
             File dir = new File(path);
             if (dir.canRead()) {
                 StatFs fs = new StatFs(dir.getAbsolutePath());
-                totalSize = fs.getBlockCount() * fs.getBlockSize();
-                freeSize = fs.getAvailableBlocks() * fs.getBlockSize();
+
+                long size = fs.getBlockSize();
+                long total = fs.getBlockCount();
+                long available = fs.getAvailableBlocks();
+                totalSize = total * size;
+                freeSize = available * size;
             }
         }
     }

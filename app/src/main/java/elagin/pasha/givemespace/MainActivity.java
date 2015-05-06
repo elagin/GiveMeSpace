@@ -47,7 +47,6 @@ public class MainActivity extends ActionBarActivity {
                 MainActivity.this.startActivity(intent);
             }
         });
-
     }
 
     private void update() {
