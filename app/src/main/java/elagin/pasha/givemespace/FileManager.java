@@ -1,6 +1,7 @@
 package elagin.pasha.givemespace;
 
 import android.os.Bundle;
+import android.os.StatFs;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -20,7 +21,6 @@ import java.util.List;
 
 public class FileManager extends ActionBarActivity {
 
-
     private static final String TAG = FileManager.class.getSimpleName();
 
     public static final String UPPER_DIR_NAME = "..";
@@ -29,6 +29,7 @@ public class FileManager extends ActionBarActivity {
     private String currentPath = "/storage/sdcard0";
 
     private TextView pathView;
+    private TextView infoView;
     private FileListAdapter adapter;
 
     private List<GSFile> records = new ArrayList();
@@ -36,6 +37,7 @@ public class FileManager extends ActionBarActivity {
     private List<GSFile> filesList = new ArrayList();
 
     private long folderVolume;
+    private long avaibleSize;
 
     private android.support.v7.app.ActionBar actionBar;
     private Menu mMenu;
@@ -52,6 +54,7 @@ public class FileManager extends ActionBarActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         pathView = (TextView) findViewById(R.id.path);
+        infoView = (TextView) findViewById(R.id.info);
 
         final ListView lv = (ListView) findViewById(R.id.listView);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -79,7 +82,7 @@ public class FileManager extends ActionBarActivity {
     }
 
     private void toDownDir(String path) {
-        if(currentPath.equals(ROOT_DIR_NAME))
+        if (currentPath.equals(ROOT_DIR_NAME))
             currentPath = File.separator + path;
         else
             currentPath = currentPath + File.separator + path;
@@ -89,7 +92,7 @@ public class FileManager extends ActionBarActivity {
     private void toUpDir() {
         int cutPos = currentPath.lastIndexOf(File.separator);
         currentPath = currentPath.substring(0, cutPos);
-        if(currentPath.length() == 0)
+        if (currentPath.length() == 0)
             currentPath = ROOT_DIR_NAME;
         update(false);
     }
@@ -99,7 +102,7 @@ public class FileManager extends ActionBarActivity {
         foldersList.clear();
         filesList.clear();
 
-        if(mMenu != null) {
+        if (mMenu != null) {
             MenuItem menuItem = mMenu.findItem(R.id.action_update);
             menuItem.setVisible(!currentPath.equals(ROOT_DIR_NAME));
         }
@@ -113,9 +116,9 @@ public class FileManager extends ActionBarActivity {
 
         try {
             File dir = new File(currentPath);
-            if( dir != null ) {
+            if (dir != null) {
                 File files[] = dir.listFiles();
-                if(files != null){
+                if (files != null) {
                     for (int i = 0; i < files.length; i++) {
                         GSFile item = new GSFile();
                         item.name = files[i].getName();
@@ -142,8 +145,18 @@ public class FileManager extends ActionBarActivity {
 
             records.addAll(foldersList);
             records.addAll(filesList);
-        }
-        catch (Exception e) {
+
+            if (isCalcDir) {
+                StatFs fs = new StatFs(dir.getAbsolutePath());
+                long size = fs.getBlockSize();
+                long available = fs.getAvailableBlocks();
+                avaibleSize = available * size;
+                setInfo();
+            } else {
+                infoView.setText("");
+            }
+
+        } catch (Exception e) {
             Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
@@ -155,7 +168,7 @@ public class FileManager extends ActionBarActivity {
             GSFile file1 = app1;
             GSFile file2 = app2;
 
-            if(file1.size > file2.size)
+            if (file1.size > file2.size)
                 return 1;
             else
                 return -1;
@@ -169,7 +182,7 @@ public class FileManager extends ActionBarActivity {
             GSFile file1 = app1;
             GSFile file2 = app2;
 
-            if(file1.size < file2.size)
+            if (file1.size < file2.size)
                 return 1;
             else
                 return -1;
@@ -183,7 +196,7 @@ public class FileManager extends ActionBarActivity {
             GSFile file1 = app1;
             GSFile file2 = app2;
 
-            if(file1.isFile)
+            if (file1.isFile)
                 return 1;
             else
                 return -1;
@@ -197,7 +210,7 @@ public class FileManager extends ActionBarActivity {
             GSFile file1 = app1;
             GSFile file2 = app2;
 
-            if(file2.isFile)
+            if (file2.isFile)
                 return 1;
             else
                 return -1;
@@ -227,9 +240,16 @@ public class FileManager extends ActionBarActivity {
     }
 
     private void setTitle() {
-        String format = this.getString(R.string.title_activity_file_manager);
-        String title = String.format(format, GSConverter.readableFileSize(folderVolume));
+        String formatVolume = this.getString(R.string.title_activity_file_manager);
+        String title = String.format(formatVolume, GSConverter.readableFileSize(folderVolume));
         actionBar.setTitle(title);
+    }
+
+    private void setInfo() {
+        String formatVolume = this.getString(R.string.title_activity_file_manager);
+        String formatAvaible = this.getString(R.string.title_activity_avaible_size);
+        String title = String.format(formatVolume, GSConverter.readableFileSize(folderVolume)) + " / " + String.format(formatAvaible, GSConverter.readableFileSize(avaibleSize));
+        infoView.setText(title);
     }
 
     private long getFolderSize(String path) {
@@ -238,9 +258,9 @@ public class FileManager extends ActionBarActivity {
         try {
 
             File dir = new File(path);
-            if(dir != null ) {
+            if (dir != null) {
                 File files[] = dir.listFiles();
-                if(files != null) {
+                if (files != null) {
                     for (int i = 0; i < files.length; i++) {
                         File file = files[i];
 
@@ -258,8 +278,7 @@ public class FileManager extends ActionBarActivity {
             } else {
                 Log.e(TAG + "getFolderSize", "Invalid new File");
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Toast.makeText(this, "Ошибка: " + fileName + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
             Log.d("FM", e.getLocalizedMessage());
         }
